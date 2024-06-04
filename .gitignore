@@ -1,253 +1,139 @@
 if game.PlaceId ~= 8206123457 and game.PlaceId == 8204899140 then
-    --// Services
-    local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+	-->> Services >>
+	local Players = cloneref(game:GetService("Players"))
+	local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 
-    --// Variables
-    local MAX_EXECUTION_TIME = 10
-    local RETRY_INTERVAL = 0.4
-    local MAX_RETRIES = 10
-    local Hooks = {}
-    local HANDSHAKE_ARGS = nil
-    local SHUFFLE_FUNCTION = nil
-    local AC_STRING = nil
-    local Remote = ReplicatedStorage:WaitForChild("Remotes").CharacterSoundEvent
+	-->> Variables >>
+	local LocalPlayer = Players.LocalPlayer
 
-    --> Retrieve Handshake Args
-    Hooks.Namecall = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
-        local Method = getnamecallmethod()
-        local Args = {...}
+	-->> Utilities
+	local AC_STRING = nil
+	local HandshakeArguments = nil
+	local HandshakeRemote = ReplicatedStorage:WaitForChild("Remotes"):FindFirstChild("CharacterSoundEvent")
+	local LastCheck = nil
+	local LastCheckTwo = nil
 
-        if
-            not checkcaller()
-            and rawequal(self, Remote)
-            and rawequal(Method, "fireServer")
-            and string.find(Args[1], "AC")
-            and rawequal(type(Args[2]), "table")
-            and rawequal(rawlen(Args[2]), 19)
-        then
-            if not HANDSHAKE_ARGS and not AC_STRING then
-                HANDSHAKE_ARGS = Args[2]
-                AC_STRING = Args[1]
-            else
-                return coroutine.yield()
-            end
-        end
+	-->> Functions >>
+	local ReplicateHandshake = function()
+		if AC_STRING ~= nil and HandshakeArguments then
+			return HandshakeRemote:fireServer(AC_STRING, HandshakeArguments, nil)
+		end
+	end
 
-        return Hooks.Namecall(self, ...)
-    end))
+	-->> Hooks >>
+	local OldInfo
+	OldInfo = hookfunction(debug.info, function(Level, Stuff)
+		if Level == 2 and Stuff == "s" then
+			return "LocalScript"
+		end
 
-    --> Wait for HANDSHAKE_ARGS
-    while not HANDSHAKE_ARGS do
-        task.wait()
-    end
+		return OldInfo(Level, Stuff)
+	end)
 
-    --> Delay
-    task.wait(1)
+	local OldCheck
+	OldCheck = hookfunction(getrawmetatable(game).__namecall, function(Self, ...)
+		local Method = getnamecallmethod()
+		local Args = {...}
 
-    --> Shuffle Function Grabber
-    for Index, Function in pairs(getgc()) do
-        if type(Function) == 'function' and debug.getinfo(Function).source:find("PlayerModule.LocalScript") then
-            if debug.getinfo(Function).numparams == 7 then
-                if not SHUFFLE_FUNCTION then
-                    SHUFFLE_FUNCTION = Function
-                end
-            end
-        end
-    end
+		if not checkcaller() and Method == "fireServer" and Self == HandshakeRemote then
+			if Args[1] and string.find(Args[1], "AC") then
+				if Args[2] == "error" then
+					return
+				end
 
-    local shit = function()
-        return Remote:fireServer(AC_STRING, HANDSHAKE_ARGS, nil)
-    end
+				if Args[2] == nil then
+					return
+				end
 
-    --> Replicate Handshake
-    task.spawn(function()
-        local RETRIES = 0
-        local TIME = os.clock()
+				local Table = getrawmetatable(Args[2]).__tostring
+				LastCheckTwo = tick()
 
-        while RETRIES < MAX_RETRIES do
-            local Success, Error = pcall(shit)
+				AC_STRING = Args[1]
 
-            if Success then
-                RETRIES = 0
-            else
-                RETRIES = RETRIES + 1
-                warn("Bypass timed out.")
-            end
+				if type(Args[2]) == "table" then
+					if not HandshakeArguments then
+						HandshakeArguments = Args[2]
+					else
+						return coroutine.yield()
+					end
+				end
+			end
+		end
 
-            task.wait(RETRY_INTERVAL)
-        end
+		return OldCheck(Self, ...)
+	end)
 
-        warn("Bypass timed out.")
-    end)
+	for Index, Function in next, getgc() do
+		if type(Function) == "function" and getinfo(Function).source:find("ReplicatedFirst.LocalScript") then
+			hookfunction(Function, function()
 
-    --> Lag Bypass
-    task.spawn(function()
-        for Index, Value in getgc() do
-            if type(Value) == 'function' and getinfo(Value).source:find("PlayerModule.LocalScript") then
-                for Index2, Value2 in getconstants(Value) do
-                    if Value2 == 4000001 then
-                        setconstant(Value, Index2, 1)
-                    end
+			end)
+		end
+	end
 
-                    if Value2 == 20.03 then
-                        setconstant(Value, Index2, 100)
-                    end
+	task.wait(3)
 
-                    if Value2 == 50.03 then
-                        setconstant(Value, Index2, 100)
-                    end
-                end
+	-->> Grab Shuffle Function >>
+	for Index, Function in next, getgc() do
+		if type(Function) == "function" then
+			if getinfo(Function).source:find("PlayerModule.LocalScript") then
+				if getinfo(Function).numparams == 7 then
+					local Shuffle
+					Shuffle = hookfunction(Function, function(...)
+						local Args = {...}
 
-                hookfunction(Value, function()
+						if Args[2] ~= 760 and Args[3] ~= 760 and Args[4] ~= 771 and Args[5] ~= 665 and Args[6] ~= 898 or Args[2] ~= 655 and Args[3] ~= 775 and Args[4] ~= 724 and Args[5] ~= 633 and Args[6] ~= 891 and Args[2] ~= 660 and Args[3] ~= 759 and Args[4] ~= 751 and Args[5] ~= 863 and Args[6] ~= 771 then
+							return coroutine.yield()
+						end
+				
+						LastCheck = tick()
+				
+						return Shuffle(...)
+					end)
+				end
+			end
+		end
+	end
+--asset
+	task.spawn(function()
+		while task.wait(0.4) do
+			if LastCheck ~= nil and (LastCheck - tick()) >= 10 then
+				warn("Bypass timed out.")
+				task.wait(20)
+				LocalPlayer:Kick("")
+				game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.TitleFrame.ErrorTitle.Text = "Bypass Error."
+				game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.MessageArea.ErrorFrame.ErrorMessage.Text = "Bypass timed out."
+				return
+			end
 
-                end)
-            end
-        end
-    end)
-    -- > Hook the SHUFFLE_FUNCTION
-    if SHUFFLE_FUNCTION then
-        local old_shufflehook
-        old_shufflehook = hookfunction(SHUFFLE_FUNCTION, newcclosure(function(...)
-            local args = { ... }
-    
-            if 
-                rawequal(args[2], 668) 
-                and rawequal(args[3], 670) 
-                and rawequal(args[4], 751) 
-                and rawequal(args[5], 671)
-                and rawequal(args[6], 791)
-            then
-                args[2] = 120
-                args[3] = 292
-                args[4] = 576
-                args[5] = 012
-                args[6] = 445
-    
-                return old_shufflehook(unpack(args))
-            end
-    
-            if 
-                rawequal(args[2], 686)
-                and rawequal(args[3], 788)
-                and rawequal(args[4], 811)
-                and rawequal(args[5], 880)
-                and rawequal(args[6], 785)
-            then
-                args[2] = 120
-                args[3] = 292
-                args[4] = 576
-                args[5] = 012
-                args[6] = 445
-    
-                return old_shufflehook(unpack(args))
-            end
-    
-            if
-                rawequal(args[2], 859)
-                and rawequal(args[3], 775)
-                and rawequal(args[4], 751)
-                and rawequal(args[5], 671)
-                and rawequal(args[6], 664)
-            then
-                args[2] = 120
-                args[3] = 292
-                args[4] = 576
-                args[5] = 012
-                args[6] = 445
-    
-                return old_shufflehook(unpack(args))
-            end
-    
-            if
-                rawequal(args[2], 764)
-                and rawequal(args[3], 699)
-                and rawequal(args[4], 751)
-                and rawequal(args[5], 671)
-                and rawequal(args[6], 774)
-            then
-                args[2] = 120
-                args[3] = 292
-                args[4] = 576
-                args[5] = 012
-                args[6] = 445
-    
-                return old_shufflehook(unpack(args))
-            end
-    
-            if
-                rawequal(args[2], 811)
-                and rawequal(args[3], 777)
-                and rawequal(args[4], 751)
-                and rawequal(args[5], 690)
-                and rawequal(args[6], 784)
-            then
-                args[2] = 120
-                args[3] = 292
-                args[4] = 576
-                args[5] = 012
-                args[6] = 445
-    
-                return old_shufflehook(unpack(args))
-            end
-    
-            if
-                rawequal(args[2], 898)
-                and rawequal(args[3], 892)
-                and rawequal(args[4], 811)
-                and rawequal(args[5], 671)
-                and rawequal(args[6], 781)
-            then
-                args[2] = 120
-                args[3] = 292
-                args[4] = 576
-                args[5] = 012
-                args[6] = 445
-		
-                return old_shufflehook(unpack(args))
-            end
-    
-            if 
-                rawequal(args[2], 887)
-                and rawequal(args[3], 782)
-                and rawequal(args[4], 780)
-                and rawequal(args[5], 648)
-                and rawequal(args[6], 659)
-            then
-                args[2] = 120
-                args[3] = 292
-                args[4] = 576
-                args[5] = 012
-                args[6] = 445
-    
-                return old_shufflehook(unpack(args))
-            end
+			if LastCheckTwo ~= nil and (LastCheckTwo - tick()) >= 10 then
+				warn("Bypass timed out.")
+				task.wait(20)
+				LocalPlayer:Kick("")
+				game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.TitleFrame.ErrorTitle.Text = "Bypass Error."
+				game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.MessageArea.ErrorFrame.ErrorMessage.Text = "Bypass timed out."
+				return
+			end
+		end
+	end)
 
-            if 
-                rawequal(args[2], 798)
-                and rawequal(args[3], 711)
-                and rawequal(args[4], 811)
-                and rawequal(args[5], 699)
-                and rawequal(args[5], 762)
-            then
-                args[2] = 120
-                args[3] = 292
-                args[4] = 576
-                args[5] = 012
-                args[6] = 445
-                return old_shufflehook(unpack(args))
-            end
-
-            return old_shufflehook(...)
-        end))
-    else
-        warn("Bypass timed out.")
-    end
+	task.spawn(function()
+		while task.wait(0.4) do
+			if AC_STRING and HandshakeArguments then
+				HandshakeRemote:fireServer(AC_STRING, HandshakeArguments, nil)
+			end
+		end
+	end)
 end
+
+task.wait()
+
 print("██╗░░░░░░█████╗░░█████╗░██████╗░███████╗██████╗░  ██╗")
 print("██║░░░░░██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗  ██║")
 print("██║░░░░░██║░░██║███████║██║░░██║█████╗░░██║░░██║  ██║")
 print("██║░░░░░██║░░██║██╔══██║██║░░██║██╔══╝░░██║░░██║  ╚═╝")
 print("███████╗╚█████╔╝██║░░██║██████╔╝███████╗██████╔╝  ██╗")
 print("╚══════╝░╚════╝░╚═╝░░╚═╝╚═════╝░╚══════╝╚═════╝░  ╚═╝")
-print("bypass made by vpn vibrant!")
-task.wait()
+
+
+print("full vibrant bypass made by vpn")
