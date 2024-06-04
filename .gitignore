@@ -1,22 +1,253 @@
-### AL ###
-#Template for AL projects for Dynamics 365 Business Central
-#launch.json folder
-.vscode/
-#Cache folder
-.alcache/
-#Symbols folder
-.alpackages/
-#Snapshots folder
-.snapshots/
-#Testing Output folder
-.output/
-#Extension App-file
-*.app
-#Rapid Application Development File
-rad.json
-#Translation Base-file
-*.g.xlf
-#License-file
-*.flf
-#Test results file
-TestResults.xml
+if game.PlaceId ~= 8206123457 and game.PlaceId == 8204899140 then
+    --// Services
+    local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+
+    --// Variables
+    local MAX_EXECUTION_TIME = 10
+    local RETRY_INTERVAL = 0.4
+    local MAX_RETRIES = 10
+    local Hooks = {}
+    local HANDSHAKE_ARGS = nil
+    local SHUFFLE_FUNCTION = nil
+    local AC_STRING = nil
+    local Remote = ReplicatedStorage:WaitForChild("Remotes").CharacterSoundEvent
+
+    --> Retrieve Handshake Args
+    Hooks.Namecall = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+        local Method = getnamecallmethod()
+        local Args = {...}
+
+        if
+            not checkcaller()
+            and rawequal(self, Remote)
+            and rawequal(Method, "fireServer")
+            and string.find(Args[1], "AC")
+            and rawequal(type(Args[2]), "table")
+            and rawequal(rawlen(Args[2]), 19)
+        then
+            if not HANDSHAKE_ARGS and not AC_STRING then
+                HANDSHAKE_ARGS = Args[2]
+                AC_STRING = Args[1]
+            else
+                return coroutine.yield()
+            end
+        end
+
+        return Hooks.Namecall(self, ...)
+    end))
+
+    --> Wait for HANDSHAKE_ARGS
+    while not HANDSHAKE_ARGS do
+        task.wait()
+    end
+
+    --> Delay
+    task.wait(1)
+
+    --> Shuffle Function Grabber
+    for Index, Function in pairs(getgc()) do
+        if type(Function) == 'function' and debug.getinfo(Function).source:find("PlayerModule.LocalScript") then
+            if debug.getinfo(Function).numparams == 7 then
+                if not SHUFFLE_FUNCTION then
+                    SHUFFLE_FUNCTION = Function
+                end
+            end
+        end
+    end
+
+    local shit = function()
+        return Remote:fireServer(AC_STRING, HANDSHAKE_ARGS, nil)
+    end
+
+    --> Replicate Handshake
+    task.spawn(function()
+        local RETRIES = 0
+        local TIME = os.clock()
+
+        while RETRIES < MAX_RETRIES do
+            local Success, Error = pcall(shit)
+
+            if Success then
+                RETRIES = 0
+            else
+                RETRIES = RETRIES + 1
+                warn("Bypass timed out.")
+            end
+
+            task.wait(RETRY_INTERVAL)
+        end
+
+        warn("Bypass timed out.")
+    end)
+
+    --> Lag Bypass
+    task.spawn(function()
+        for Index, Value in getgc() do
+            if type(Value) == 'function' and getinfo(Value).source:find("PlayerModule.LocalScript") then
+                for Index2, Value2 in getconstants(Value) do
+                    if Value2 == 4000001 then
+                        setconstant(Value, Index2, 1)
+                    end
+
+                    if Value2 == 20.03 then
+                        setconstant(Value, Index2, 100)
+                    end
+
+                    if Value2 == 50.03 then
+                        setconstant(Value, Index2, 100)
+                    end
+                end
+
+                hookfunction(Value, function()
+
+                end)
+            end
+        end
+    end)
+    -- > Hook the SHUFFLE_FUNCTION
+    if SHUFFLE_FUNCTION then
+        local old_shufflehook
+        old_shufflehook = hookfunction(SHUFFLE_FUNCTION, newcclosure(function(...)
+            local args = { ... }
+    
+            if 
+                rawequal(args[2], 668) 
+                and rawequal(args[3], 670) 
+                and rawequal(args[4], 751) 
+                and rawequal(args[5], 671)
+                and rawequal(args[6], 791)
+            then
+                args[2] = 120
+                args[3] = 292
+                args[4] = 576
+                args[5] = 012
+                args[6] = 445
+    
+                return old_shufflehook(unpack(args))
+            end
+    
+            if 
+                rawequal(args[2], 686)
+                and rawequal(args[3], 788)
+                and rawequal(args[4], 811)
+                and rawequal(args[5], 880)
+                and rawequal(args[6], 785)
+            then
+                args[2] = 120
+                args[3] = 292
+                args[4] = 576
+                args[5] = 012
+                args[6] = 445
+    
+                return old_shufflehook(unpack(args))
+            end
+    
+            if
+                rawequal(args[2], 859)
+                and rawequal(args[3], 775)
+                and rawequal(args[4], 751)
+                and rawequal(args[5], 671)
+                and rawequal(args[6], 664)
+            then
+                args[2] = 120
+                args[3] = 292
+                args[4] = 576
+                args[5] = 012
+                args[6] = 445
+    
+                return old_shufflehook(unpack(args))
+            end
+    
+            if
+                rawequal(args[2], 764)
+                and rawequal(args[3], 699)
+                and rawequal(args[4], 751)
+                and rawequal(args[5], 671)
+                and rawequal(args[6], 774)
+            then
+                args[2] = 120
+                args[3] = 292
+                args[4] = 576
+                args[5] = 012
+                args[6] = 445
+    
+                return old_shufflehook(unpack(args))
+            end
+    
+            if
+                rawequal(args[2], 811)
+                and rawequal(args[3], 777)
+                and rawequal(args[4], 751)
+                and rawequal(args[5], 690)
+                and rawequal(args[6], 784)
+            then
+                args[2] = 120
+                args[3] = 292
+                args[4] = 576
+                args[5] = 012
+                args[6] = 445
+    
+                return old_shufflehook(unpack(args))
+            end
+    
+            if
+                rawequal(args[2], 898)
+                and rawequal(args[3], 892)
+                and rawequal(args[4], 811)
+                and rawequal(args[5], 671)
+                and rawequal(args[6], 781)
+            then
+                args[2] = 120
+                args[3] = 292
+                args[4] = 576
+                args[5] = 012
+                args[6] = 445
+		
+                return old_shufflehook(unpack(args))
+            end
+    
+            if 
+                rawequal(args[2], 887)
+                and rawequal(args[3], 782)
+                and rawequal(args[4], 780)
+                and rawequal(args[5], 648)
+                and rawequal(args[6], 659)
+            then
+                args[2] = 120
+                args[3] = 292
+                args[4] = 576
+                args[5] = 012
+                args[6] = 445
+    
+                return old_shufflehook(unpack(args))
+            end
+
+            if 
+                rawequal(args[2], 798)
+                and rawequal(args[3], 711)
+                and rawequal(args[4], 811)
+                and rawequal(args[5], 699)
+                and rawequal(args[5], 762)
+            then
+                args[2] = 120
+                args[3] = 292
+                args[4] = 576
+                args[5] = 012
+                args[6] = 445
+                return old_shufflehook(unpack(args))
+            end
+
+            return old_shufflehook(...)
+        end))
+    else
+        warn("Bypass timed out.")
+    end
+end
+print("██╗░░░░░░█████╗░░█████╗░██████╗░███████╗██████╗░  ██╗")
+print("██║░░░░░██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗  ██║")
+print("██║░░░░░██║░░██║███████║██║░░██║█████╗░░██║░░██║  ██║")
+print("██║░░░░░██║░░██║██╔══██║██║░░██║██╔══╝░░██║░░██║  ╚═╝")
+print("███████╗╚█████╔╝██║░░██║██████╔╝███████╗██████╔╝  ██╗")
+print("╚══════╝░╚════╝░╚═╝░░╚═╝╚═════╝░╚══════╝╚═════╝░  ╚═╝")
+print("bypass made by vpn vibrant!")
+task.wait()
