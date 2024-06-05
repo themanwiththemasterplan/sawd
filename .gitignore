@@ -1,139 +1,721 @@
 if game.PlaceId ~= 8206123457 and game.PlaceId == 8204899140 then
-	-->> Services >>
-	local Players = cloneref(game:GetService("Players"))
-	local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+    -->> Services >>
+    local Players = cloneref(game:GetService("Players"))
+    local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+  
+    -->> Variables >>
+    local LocalPlayer = Players.LocalPlayer
+  
+    -->> Utilities
+    local AC_STRING = nil
+    local HandshakeArguments = nil
+    local HandshakeRemote = ReplicatedStorage:WaitForChild("Remotes"):FindFirstChild("CharacterSoundEvent")
+    local LastCheck = nil
+    local LastCheckTwo = nil
+  
+    -->> Functions >>
+    local ReplicateHandshake = function()
+      if AC_STRING ~= nil and HandshakeArguments then
+        return HandshakeRemote:fireServer(AC_STRING, HandshakeArguments, nil)
+      end
+    end
+  
+    -->> Hooks >>
+    local OldInfo
+    OldInfo = hookfunction(debug.info, function(Level, Stuff)
+      if Level == 2 and Stuff == "s" then
+        return "LocalScript"
+      end
+  
+      return OldInfo(Level, Stuff)
+    end)
+  
+    local OldCheck
+    OldCheck = hookfunction(getrawmetatable(game).__namecall, function(Self, ...)
+      local Method = getnamecallmethod()
+      local Args = {...}
+  
+      if not checkcaller() and Method == "fireServer" and Self == HandshakeRemote then
+        if Args[1] and string.find(Args[1], "AC") then
+          if Args[2] == "error" then
+            return
+          end
+  
+          if Args[2] == nil then
+            return
+          end
+  
+          local Table = getrawmetatable(Args[2]).__tostring
+          LastCheckTwo = tick()
+  
+          AC_STRING = Args[1]
+  
+          if type(Args[2]) == "table" then
+            if not HandshakeArguments then
+              HandshakeArguments = Args[2]
+            else
+              return coroutine.yield()
+            end
+          end
+        end
+      end
+  
+      return OldCheck(Self, ...)
+    end)
+  
+    for Index, Function in next, getgc() do
+      if type(Function) == "function" and getinfo(Function).source:find("ReplicatedFirst.LocalScript") then
+        hookfunction(Function, function()
+  
+        end)
+      end
+    end
+  
+    task.wait(3)
+  
+    -->> Grab Shuffle Function >>
+    for Index, Function in next, getgc() do
+      if type(Function) == "function" then
+        if getinfo(Function).source:find("PlayerModule.LocalScript") then
+          if getinfo(Function).numparams == 7 then
+            local Shuffle
+            Shuffle = hookfunction(Function, function(...)
+              local Args = {...}
+  
+              if Args[2] ~= 760 and Args[3] ~= 760 and Args[4] ~= 771 and Args[5] ~= 665 and Args[6] ~= 898 or Args[2] ~= 655 and Args[3] ~= 775 and Args[4] ~= 724 and Args[5] ~= 633 and Args[6] ~= 891 and Args[2] ~= 660 and Args[3] ~= 759 and Args[4] ~= 751 and Args[5] ~= 863 and Args[6] ~= 771 then
+                return coroutine.yield()
+              end
+  
+              LastCheck = tick()
+  
+              return Shuffle(...)
+            end)
+          end
+        end
+      end
+    end
+  --asset
+    task.spawn(function()
+      while task.wait(0.4) do
+        if LastCheck ~= nil and (LastCheck - tick()) >= 10 then
+          warn("Bypass timed out.")
+          task.wait(20)
+          LocalPlayer:Kick("")
+          game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.TitleFrame.ErrorTitle.Text = "Bypass Error."
+          game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.MessageArea.ErrorFrame.ErrorMessage.Text = "Bypass timed out."
+          return
+        end
+  
+        if LastCheckTwo ~= nil and (LastCheckTwo - tick()) >= 10 then
+          warn("Bypass timed out.")
+          task.wait(20)
+          LocalPlayer:Kick("")
+          game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.TitleFrame.ErrorTitle.Text = "Bypass Error."
+          game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.MessageArea.ErrorFrame.ErrorMessage.Text = "Bypass timed out."
+          return
+        end
+      end
+    end)
+  
+    task.spawn(function()
+      while task.wait(0.4) do
+        if AC_STRING and HandshakeArguments then
+          HandshakeRemote:fireServer(AC_STRING, HandshakeArguments, nil)
+        end
+      end
+    end)
+  end
+  
+  task.wait()
+  
+  print("██╗░░░░░░█████╗░░█████╗░██████╗░███████╗██████╗░  ██╗")
+  print("██║░░░░░██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗  ██║")
+  print("██║░░░░░██║░░██║███████║██║░░██║█████╗░░██║░░██║  ██║")
+  print("██║░░░░░██║░░██║██╔══██║██║░░██║██╔══╝░░██║░░██║  ╚═╝")
+  print("███████╗╚█████╔╝██║░░██║██████╔╝███████╗██████╔╝  ██╗")
+  print("╚══════╝░╚════╝░╚═╝░░╚═╝╚═════╝░╚══════╝╚═════╝░  ╚═╝")
+  
+  
+  print("full vibrant bypass made by vpn")
 
-	-->> Variables >>
-	local LocalPlayer = Players.LocalPlayer
 
-	-->> Utilities
-	local AC_STRING = nil
-	local HandshakeArguments = nil
-	local HandshakeRemote = ReplicatedStorage:WaitForChild("Remotes"):FindFirstChild("CharacterSoundEvent")
-	local LastCheck = nil
-	local LastCheckTwo = nil
 
-	-->> Functions >>
-	local ReplicateHandshake = function()
-		if AC_STRING ~= nil and HandshakeArguments then
-			return HandshakeRemote:fireServer(AC_STRING, HandshakeArguments, nil)
+
+
+  local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "Tyrant hub", HidePremium = true, IntroText = "test",IntroEnabled = true, SaveConfig = false, ConfigFolder = ""})
+
+
+local Tab = Window:MakeTab({
+	Name = "mags and stuff",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+Tab:AddToggle({
+    Name = "Mag",
+    Default = false,
+    Callback = function(toggleValue)
+ HitboxExpanderEnabled = toggleValue
+    end,
+})
+
+Tab:AddSlider({
+    Name = "distance",
+    Min = 0,
+    Max = 30,
+    Default = 15,
+    Color = Color3.fromRGB(255,255,255),
+    Increment = 1,
+    ValueName = "mags",
+    Callback = function(sliderValue)
+    HitboxExpanderSize = sliderValue
+    end,
+})   
+
+
+
+
+--// services
+
+local players = game:GetService("Players")
+local userInputService = game:GetService("UserInputService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+
+--// variables
+
+local pwr, at, natpwr = 0, Vector3.new(0, 0, 0), 0
+local camera = workspace.CurrentCamera
+local player = players.LocalPlayer
+local target = nil
+local silent = false
+local silentkey = ""
+local typing = false
+local locked = false
+local attach0 = Instance.new("Attachment")
+local attach1 = Instance.new("Attachment")
+local beam = Instance.new("Beam")
+local character = player.Character
+local tf = Instance.new("Model")
+local mouse = player:GetMouse()
+local sphere = Instance.new("Part")
+local mode = "Dime"
+local modes = {
+	["Dime"] = "Mag",
+	["Mag"] = "Bullet",
+	["Bullet"] = "Dime"
+}
+local oldHighlight = nil
+
+--// gui init
+
+local Finium = Instance.new("ScreenGui")
+local Main = Instance.new("Frame")
+local Mode = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Value = Instance.new("TextLabel")
+local Title = Instance.new("TextLabel")
+local Power = Instance.new("Frame")
+local UICorner_2 = Instance.new("UICorner")
+local Value_2 = Instance.new("TextLabel")
+local Title_2 = Instance.new("TextLabel")
+local PassDuration = Instance.new("Frame")
+local UICorner_3 = Instance.new("UICorner")
+local Value_3 = Instance.new("TextLabel")
+local Title_3 = Instance.new("TextLabel")
+local Route = Instance.new("Frame")
+local UICorner_4 = Instance.new("UICorner")
+local Value_4 = Instance.new("TextLabel")
+local Title_4 = Instance.new("TextLabel")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+
+Finium.Name = "Finium"
+Finium.Parent = gethui()
+Finium.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Main.Name = "Main"
+Main.Parent = Finium
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Main.BackgroundTransparency = 1.000
+Main.Position = UDim2.new(0.4995583, 0, 0.15, 0)
+Main.Size = UDim2.new(0.542698324, 0, 0.183452487, 0)
+
+Mode.Name = "Mode"
+Mode.Parent = Main
+Mode.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+Mode.Position = UDim2.new(0.153428286, 0, 0.0701754242, 0)
+Mode.Size = UDim2.new(0, 59, 0, 47)
+
+UICorner.Parent = Mode
+
+Value.Name = "Value"
+Value.Parent = Mode
+Value.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Value.BackgroundTransparency = 1.000
+Value.Position = UDim2.new(0.0916655064, 0, 0.0548526943, 0)
+Value.Size = UDim2.new(0.810000002, 0, 0.50999999, 0)
+Value.Font = Enum.Font.SourceSansBold
+Value.Text = "Dime"
+Value.TextColor3 = Color3.fromRGB(0, 0, 0)
+Value.TextScaled = true
+Value.TextSize = 14.000
+Value.TextWrapped = true
+
+Title.Name = "Title"
+Title.Parent = Mode
+Title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Title.BackgroundTransparency = 1.000
+Title.Position = UDim2.new(0.278204948, 0, 0.493999988, 0)
+Title.Size = UDim2.new(0.430771053, 0, 0.443999976, 0)
+Title.Font = Enum.Font.SourceSans
+Title.Text = "Mode"
+Title.TextColor3 = Color3.fromRGB(0, 0, 0)
+Title.TextScaled = true
+Title.TextSize = 14.000
+Title.TextStrokeTransparency = 0.000
+Title.TextWrapped = true
+
+Power.Name = "Power"
+Power.Parent = Main
+Power.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Power.Position = UDim2.new(0.390009284, 0, 0.0701754242, 0)
+Power.Size = UDim2.new(0, 59, 0, 47)
+
+UICorner_2.Parent = Power
+
+Value_2.Name = "Value"
+Value_2.Parent = Power
+Value_2.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+Value_2.BackgroundTransparency = 1.000
+Value_2.Position = UDim2.new(0.091665484, 0, 0.0548526943, 0)
+Value_2.Size = UDim2.new(0.809617341, 0, 0.51030314, 0)
+Value_2.Font = Enum.Font.SourceSansBold
+Value_2.Text = "nil"
+Value_2.TextColor3 = Color3.fromRGB(100, 0, 0)
+Value_2.TextScaled = true
+Value_2.TextSize = 14.000
+Value_2.TextWrapped = true
+
+Title_2.Name = "Title"
+Title_2.Parent = Power
+Title_2.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+Title_2.BackgroundTransparency = 1.000
+Title_2.Position = UDim2.new(0.194000006, 0, 0.493999988, 0)
+Title_2.Size = UDim2.new(0.600000024, 0, 0.444000006, 0)
+Title_2.Font = Enum.Font.SourceSans
+Title_2.Text = "Power"
+Title_2.TextColor3 = Color3.fromRGB(100, 0, 0)
+Title_2.TextScaled = true
+Title_2.TextSize = 14.000
+Title_2.TextStrokeTransparency = 0.000
+Title_2.TextWrapped = true
+
+PassDuration.Name = "PassDuration"
+PassDuration.Parent = Main
+PassDuration.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+PassDuration.Position = UDim2.new(0.549907744, 0, 0.0701754242, 0)
+PassDuration.Size = UDim2.new(0, 59, 0, 47)
+
+UICorner_3.Parent = PassDuration
+
+Value_3.Name = "Value"
+Value_3.Parent = PassDuration
+Value_3.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Value_3.BackgroundTransparency = 1.000
+Value_3.Position = UDim2.new(0.0916655064, 0, 0.0548527762, 0)
+Value_3.Size = UDim2.new(0.810000002, 0, 0.50999999, 0)
+Value_3.Font = Enum.Font.SourceSansBold
+Value_3.Text = "nil"
+Value_3.TextColor3 = Color3.fromRGB(0, 0, 0)
+Value_3.TextScaled = true
+Value_3.TextSize = 14.000
+Value_3.TextWrapped = true
+
+Title_3.Name = "Title"
+Title_3.Parent = PassDuration
+Title_3.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Title_3.BackgroundTransparency = 1.000
+Title_3.Position = UDim2.new(0.194000006, 0, 0.493999988, 0)
+Title_3.Size = UDim2.new(0.600000024, 0, 0.444000006, 0)
+Title_3.Font = Enum.Font.SourceSans
+Title_3.Text = "Airtime"
+Title_3.TextColor3 = Color3.fromRGB(0, 0, 0)
+Title_3.TextScaled = true
+Title_3.TextSize = 14.000
+Title_3.TextStrokeTransparency = 0.000
+Title_3.TextWrapped = true
+
+--33, 33, 33
+UIAspectRatioConstraint.Parent = Main
+UIAspectRatioConstraint.AspectRatio = 6.459
+
+--// functions
+
+local qbon = false
+
+local function calculateLanding(power, direction)
+	local origin = character.Head.Position + (direction * 5)
+	local velocity = power * direction
+	local peakvel = velocity * (velocity.Y / 28)
+	local airtime = (velocity.Y / 28) * 2
+	return origin + Vector3.new(peakvel.X * 2, 0, peakvel.Z * 2), airtime
+end
+
+local function findZDirection()
+	local zDiff = player.Character.HumanoidRootPart.Position.Z - at.Z
+	local a = 0
+	if zDiff < 0 then
+		a = 1
+	else
+		a = -1
+	end
+	return a	
+end
+
+local function getMoveDirection(humanoid)
+	local isPlayer = players:GetPlayerFromCharacter(humanoid.Parent)
+	if isPlayer then
+		return humanoid.MoveDirection
+	else
+		return (humanoid.WalkToPoint - player.Character.Head.Position).Unit
+	end
+end
+
+local function findPower(char)
+	local powerTable = {
+		[10] = 55,
+		[20] = 60,
+		[30] = 65,
+		[35] = 70,
+		[40] = 75,
+		[50] = 80,
+		[60] = 85,
+		[70] = 90,
+		[80] = 95,
+	}
+	local distance = (character.Head.Position - char.Head.Position).Magnitude
+	local lDiff = math.huge
+	local power = 0
+	local pdistance = nil
+	local reachedDis = 0
+	local nextDis = 0
+	local naturalPower = 0
+	for dis, pwr in pairs(powerTable) do
+		dis *= 3
+		if distance > dis and dis > reachedDis then
+			power = pwr
+			naturalPower = pwr
+			pdistance = dis
+			reachedDis = dis
+			if dis == 90 then nextDis = dis + 15 else nextDis = dis + 30 end
 		end
 	end
+	local diff = math.clamp(nextDis - distance, 0, math.huge)
+	local required = (nextDis - reachedDis)
+	local nextPower = powerTable[nextDis / 3] or 75
+	local percentage = diff / required
+	--print(diff, required, nextPower, power, percentage, (nextPower - power) - ((nextPower - power) * percentage))
+	power += math.clamp((nextPower - power) - ((nextPower - power) * percentage), 0, 100)
+	return power, naturalPower
+end
 
-	-->> Hooks >>
-	local OldInfo
-	OldInfo = hookfunction(debug.info, function(Level, Stuff)
-		if Level == 2 and Stuff == "s" then
-			return "LocalScript"
+local function isPractice()
+	return game.PlaceId == 8206123457
+end
+
+if isPractice() then
+	local __namecall; __namecall = hookmetamethod(game, "__namecall", function(self, ...)
+		local args = {...}
+		if not checkcaller() and qbon and args[1] == "Clicked" then
+			local direction = (at - character.Head.Position).Unit
+			local nwArgs = {"Clicked", character.Head.CFrame.Position, character.Head.Position + direction * 10000, pwr}
+			return __namecall(self, unpack(nwArgs))
 		end
-
-		return OldInfo(Level, Stuff)
+		return __namecall(self, ...)
 	end)
-
-	local OldCheck
-	OldCheck = hookfunction(getrawmetatable(game).__namecall, function(Self, ...)
-		local Method = getnamecallmethod()
-		local Args = {...}
-
-		if not checkcaller() and Method == "fireServer" and Self == HandshakeRemote then
-			if Args[1] and string.find(Args[1], "AC") then
-				if Args[2] == "error" then
-					return
-				end
-
-				if Args[2] == nil then
-					return
-				end
-
-				local Table = getrawmetatable(Args[2]).__tostring
-				LastCheckTwo = tick()
-
-				AC_STRING = Args[1]
-
-				if type(Args[2]) == "table" then
-					if not HandshakeArguments then
-						HandshakeArguments = Args[2]
-					else
-						return coroutine.yield()
-					end
-				end
-			end
+else
+	local __namecall; __namecall = hookmetamethod(game, "__namecall", function(self, ...)
+		local args = {...}
+		if not checkcaller() and qbon and args[1] == "Clicked" then
+			local direction = (at - character.Head.Position).Unit
+			local nwArgs = {"Clicked", character.Head.CFrame.Position, character.Head.Position + direction * 10000, 95, math.round(pwr)}
+			return __namecall(self, unpack(nwArgs))
 		end
-
-		return OldCheck(Self, ...)
-	end)
-
-	for Index, Function in next, getgc() do
-		if type(Function) == "function" and getinfo(Function).source:find("ReplicatedFirst.LocalScript") then
-			hookfunction(Function, function()
-
-			end)
-		end
-	end
-
-	task.wait(3)
-
-	-->> Grab Shuffle Function >>
-	for Index, Function in next, getgc() do
-		if type(Function) == "function" then
-			if getinfo(Function).source:find("PlayerModule.LocalScript") then
-				if getinfo(Function).numparams == 7 then
-					local Shuffle
-					Shuffle = hookfunction(Function, function(...)
-						local Args = {...}
-
-						if Args[2] ~= 760 and Args[3] ~= 760 and Args[4] ~= 771 and Args[5] ~= 665 and Args[6] ~= 898 or Args[2] ~= 655 and Args[3] ~= 775 and Args[4] ~= 724 and Args[5] ~= 633 and Args[6] ~= 891 and Args[2] ~= 660 and Args[3] ~= 759 and Args[4] ~= 751 and Args[5] ~= 863 and Args[6] ~= 771 then
-							return coroutine.yield()
-						end
-				
-						LastCheck = tick()
-				
-						return Shuffle(...)
-					end)
-				end
-			end
-		end
-	end
---asset
-	task.spawn(function()
-		while task.wait(0.4) do
-			if LastCheck ~= nil and (LastCheck - tick()) >= 10 then
-				warn("Bypass timed out.")
-				task.wait(20)
-				LocalPlayer:Kick("")
-				game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.TitleFrame.ErrorTitle.Text = "Bypass Error."
-				game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.MessageArea.ErrorFrame.ErrorMessage.Text = "Bypass timed out."
-				return
-			end
-
-			if LastCheckTwo ~= nil and (LastCheckTwo - tick()) >= 10 then
-				warn("Bypass timed out.")
-				task.wait(20)
-				LocalPlayer:Kick("")
-				game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.TitleFrame.ErrorTitle.Text = "Bypass Error."
-				game.CoreGui.RobloxPromptGui.promptOverlay.ErrorPrompt.MessageArea.ErrorFrame.ErrorMessage.Text = "Bypass timed out."
-				return
-			end
-		end
-	end)
-
-	task.spawn(function()
-		while task.wait(0.4) do
-			if AC_STRING and HandshakeArguments then
-				HandshakeRemote:fireServer(AC_STRING, HandshakeArguments, nil)
-			end
-		end
+		return __namecall(self, ...)
 	end)
 end
 
-task.wait()
+local function straightenMoveDirection(moveDirection)
+	-- wrs tend to turn and can mess up the dime, so let's straighten the movedirection.
+	moveDirection = Vector3.new(moveDirection.X, 0, moveDirection.Z)
+	local x = moveDirection.X
+	local z = moveDirection.Z
+	if math.abs(x) > 0.95 then
+		if x ~= math.abs(x) then
+			x = -1
+		else
+			x = 1
+		end
+	else
+		x = 0
+	end
+	if math.abs(z) > 0.95 then
+		if z ~= math.abs(z) then
+			z = -1
+		else
+			z = 1
+		end
+	else
+		z = 0
+	end
+	local md = Vector3.new(x, 0, z)
+	if md.Magnitude <= 0 then
+		md = Vector3.new(0, 0, findZDirection())
+	end
+	return md
+end
 
-print("██╗░░░░░░█████╗░░█████╗░██████╗░███████╗██████╗░  ██╗")
-print("██║░░░░░██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗  ██║")
-print("██║░░░░░██║░░██║███████║██║░░██║█████╗░░██║░░██║  ██║")
-print("██║░░░░░██║░░██║██╔══██║██║░░██║██╔══╝░░██║░░██║  ╚═╝")
-print("███████╗╚█████╔╝██║░░██║██████╔╝███████╗██████╔╝  ██╗")
-print("╚══════╝░╚════╝░╚═╝░░╚═╝╚═════╝░╚══════╝╚═════╝░  ╚═╝")
+local function findtarget()
+	local np = nil
+	local nm = math.huge
+	local s = {workspace}
+	if workspace:FindFirstChild("npcwr") then
+		table.insert(s, workspace.npcwr.a)
+		table.insert(s, workspace.npcwr.b)
+	end
+	for i, p in pairs(s) do
+		for i, c in pairs(p:GetChildren()) do
+			if c:FindFirstChildWhichIsA("Humanoid") and c:FindFirstChild("HumanoidRootPart") then
+				local plr = players:GetPlayerFromCharacter(c)
+				if plr == player then continue end
+				if (not isPractice() and game.PlaceId ~= 0) and not plr then continue end
+				if plr and not isPractice() and plr.Team ~= player.Team then continue end
+				local d = (c.HumanoidRootPart.Position - mouse.Hit.Position).Magnitude
+				if d < nm then
+					nm = d
+					np = c
+				end	
+			end
+		end
+	end
+	return np
+end
+ 
+local function beamProjectile(g, v0, x0, t1) -- easy egomoose copy!
+	-- calculate the bezier points
+	local c = 0.5*0.5*0.5;
+	local p3 = 0.5*g*t1*t1 + v0*t1 + x0;
+	local p2 = p3 - (g*t1*t1 + v0*t1)/3;
+	local p1 = (c*g*t1*t1 + 0.5*v0*t1 + x0 - c*(x0+p3))/(3*c) - p2;
+
+	-- the curve sizes
+	local curve0 = (p1 - x0).magnitude;
+	local curve1 = (p2 - p3).magnitude;
+
+	-- build the world CFrames for the attachments
+	local b = (x0 - p3).unit;
+	local r1 = (p1 - x0).unit;
+	local u1 = r1:Cross(b).unit;
+	local r2 = (p2 - p3).unit;
+	local u2 = r2:Cross(b).unit;
+	b = u1:Cross(r1).unit;
+
+	local cf1 = CFrame.new(
+		x0.x, x0.y, x0.z,
+		r1.x, u1.x, b.x,
+		r1.y, u1.y, b.y,
+		r1.z, u1.z, b.z
+	)
+
+	local cf2 = CFrame.new(
+		p3.x, p3.y, p3.z,
+		r2.x, u2.x, b.x,
+		r2.y, u2.y, b.y,
+		r2.z, u2.z, b.z
+	)
+
+	return curve0, -curve1, cf1, cf2;
+end
+
+--// init
+
+attach0.Parent = workspace.Terrain
+attach1.Parent = workspace.Terrain
+beam.Parent = workspace.Terrain
+beam.Attachment0 = attach0
+beam.Attachment1 = attach1
+tf.Parent = workspace
+mouse.TargetFilter = tf
+
+if not isPractice() then
+	if workspace:FindFirstChild("ScrambleWall") then
+		workspace.ScrambleWall.Parent = tf
+		workspace.LineDownWall.Parent = tf
+		mouse.TargetFilter = tf
+	end
+end -- target using mouse doesnt rlly work well with the barrier, so we set it to the filter.
+
+sphere.Parent = tf
+sphere.Material = Enum.Material.Neon
+sphere.Color = Color3.fromRGB(170, 170, 255)
+sphere.CanCollide = false
+sphere.Anchored = true
+sphere.Size = Vector3.new(2, 2, 2)
+sphere.Shape = Enum.PartType.Ball
+
+--// main
+
+userInputService.InputBegan:Connect(function(input, gp)
+	typing = gp
+	local a = ""
+	pcall(function()
+		a = string.char(input.KeyCode.Value)
+	end) -- cos
+	silentkey ..= a 
+	if string.match(silentkey, "plm") then
+		silentkey = ""
+		silent = not silent
+		print(silent)
+	end
+	if not typing then
+		if input.KeyCode == Enum.KeyCode.Q then
+			locked = not locked
+		elseif input.KeyCode == Enum.KeyCode.Z then
+			mode = modes[mode]
+		end
+	end
+end)
+
+task.spawn(function()
+	while true do
+		task.wait()
+		if userInputService:IsKeyDown(Enum.KeyCode.T) and not typing and target then
+			throw(pwr, at)
+		end
+	end	
+end)
+
+task.spawn(function()
+	local function reDisplay(power)
+		local gui = player.PlayerGui.BallGui
+		for i,v in pairs(gui.Frame:GetChildren()) do
+			if v.Name~="Disp" then
+				v.BackgroundTransparency=tonumber(v.Name)<=power and 0 or 0.9
+			end
+		end
+		gui.Frame.Disp.Text=power
+	end -- stolen from cabbler!
+	while true do
+		task.wait((5/30) * (math.random(5, 14) / 10))
+		if player.PlayerGui:FindFirstChild("BallGui") and silent then
+			if natpwr ~= natpwr or natpwr < 55 then
+				natpwr = 60
+			end	
+			if pwr > (natpwr + 2.5) then
+				reDisplay(math.clamp(natpwr + 5, 0, 95))
+			else
+				reDisplay(natpwr)
+			end
+		end
+	end
+end)
+
+--mode
+Tab:AddToggle({
+    Name = "qb aimbot",
+    Default = false,
+    Callback = function(v)
+		qbon = v
+		if v then
+			Finium.Enabled = true
+			beam.Enabled = true
+		else
+			Finium.Enabled = false
+			beam.Enabled = false
+		end
+	end,
+})
 
 
-print("full vibrant bypass made by vpn")
+while true do
+	task.wait()
+	if not qbon then 
+		if oldHighlight then
+			oldHighlight:Destroy()
+			oldHighlight = nil
+		end
+		continue 
+	end
+	if not player.Character:FindFirstChild("Football") then
+		if oldHighlight then
+			oldHighlight:Destroy()
+			oldHighlight = nil
+		end
+		Finium.Enabled = false
+		sphere.Transparency = 1
+	else
+		Value.Text = mode
+		if not silent then
+			sphere.Transparency = 0
+		else
+			sphere.Transparency = 1
+		end
+		beam.Enabled = not silent
+		Finium.Enabled = not silent
+		if not locked then
+			target = findtarget()
+		end
+		if not target then task.wait() continue end
+		local highlight = Instance.new("Highlight")
+		highlight.FillColor = Color3.fromRGB(170, 170, 255)
+		highlight.Enabled = not silent
+		highlight.Parent = target
+		highlight.Adornee = target
+		if oldHighlight then
+			oldHighlight:Destroy()
+			oldHighlight = nil
+		end
+		oldHighlight = highlight
+		pwr, natpwr = findPower(target)
+		local direction = Vector3.new(0, 0, 0)
+		local moveDirection = getMoveDirection(target.Humanoid)
+		local distance = (target.Head.Position - character.Head.Position).Magnitude
+		if mode ~= "Bullet" then
+			moveDirection = straightenMoveDirection(moveDirection)
+			--local graph = visualization.new()
+			local a = 0.985
+			if mode == "Mag" then 
+				a = 1.0075
+			end
+			if pwr > 80 then
+				if character.Humanoid:GetState() ~= Enum.HumanoidStateType.Freefall then
+					a += 0.022
+				else
+					a += 0.005
+				end
+			end
+			pwr *= a
+			pwr = math.clamp(pwr, 0, 95)
+			at = target.Head.Position + (moveDirection * pwr + Vector3.new(0, (distance + (pwr / 2)), 0))
+		else
+			local estimated = distance / 95
+			pwr = 95
+			at = target.Head.Position + (moveDirection * 25 * estimated) + Vector3.new(0, (distance / 125 * 15), 0)
+		end
+		direction = (at - character.Head.Position).Unit
+		--graph:Graph(pwr, direction)
+		local lPosition, airtime = calculateLanding(pwr, direction)
+		Value_2.Text = math.round(pwr)
+		Value_3.Text = (math.round(airtime * 100) / 100).."s"
+		sphere.Position = lPosition
+		local curve0, curve1, cf1, cf2 = beamProjectile(Vector3.new(0, -28, 0), direction * pwr, character.Head.Position + direction * 5, airtime * 1.75)
+		beam.Segments = 10 * 300
+		beam.Color = ColorSequence.new(Color3.fromRGB(0, 0, 0))
+		beam.CurveSize0 = curve0
+		beam.CurveSize1 = curve1
+		attach0.CFrame = attach0.Parent.CFrame:Inverse() * cf1
+		attach1.CFrame = attach1.Parent.CFrame:Inverse() * cf2
+		task.wait()	
+	end
+end 
